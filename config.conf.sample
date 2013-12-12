@@ -1,0 +1,15 @@
+{
+  "smtp": {
+    "host": "mail.foo.com",
+    "port": 25,
+    "user": "bar@foo.com",
+    "pass": "foobar"
+  },
+
+  "mail": {
+    "from"    : "bar@foo.com",
+    "fromname": "Foo Bar"
+  },
+
+  "waitfor" : "10s"
+}
