@@ -45,25 +45,26 @@ func New() *Queue {
 
 // HasQueue checks if has files in queue directory and
 // append this files in Queue.Files.
-func (q *Queue) HasQueue() (hasQueue bool, err error) {
-    markFn := func(path string, info os.FileInfo, err error) error {
-        if err != nil {
-            return err
+func (q *Queue) HasQueue() bool {
+    hasQueue := false
+
+    dir, _ := os.Open(q.Dir)
+    defer dir.Close()
+
+    fileInfos, _ := dir.Readdir(-1)
+    for _, fi := range fileInfos {
+        if fi.IsDir() {
+            continue
         }
 
-        if path[:1] == "." || info.IsDir() || filepath.Ext(path) != ".json" {
-            return nil
-        }
-
-        if ok, _ := regexp.MatchString("^[0-9]+\\.json$", info.Name()); ok {
+        if ok, _ := regexp.MatchString("^[0-9]+\\.json$", fi.Name()); ok {
             hasQueue = true
-            q.Files = append(q.Files, path)
+            f, _ := filepath.Abs(q.Dir + string(os.PathSeparator) + fi.Name())
+            q.Files = append(q.Files, f)
         }
-
-        return nil
     }
 
-    return hasQueue, filepath.Walk(q.Dir, markFn)
+    return hasQueue
 }
 
 // Process a file in argument.

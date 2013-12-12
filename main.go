@@ -26,12 +26,7 @@ import (
 func run() {
     q := queue.New()
 
-    hasQueue, err := q.HasQueue()
-    if err != nil {
-        log.Println(err)
-    }
-
-    if hasQueue {
+    if q.HasQueue() {
         for _,file := range q.Files {
             go q.Process(file)
         }
@@ -43,7 +38,7 @@ func run() {
 
 func main() {
     // Prepare log file
-    f, err := os.OpenFile("log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+    f, err := os.OpenFile("log", os.O_WRONLY | os.O_CREATE | os.O_APPEND, 0666)
     if err != nil {
         log.Fatal(err)
     }
@@ -51,7 +46,7 @@ func main() {
     log.SetOutput(f)
 
     log.Println("Starting")
-	log.Printf("Using config %s\n", conf.Path)
+    log.Printf("Using config %s\n", conf.Path)
     log.Println(conf.String())
 
     wait, _ := time.ParseDuration(conf.WaitFor())

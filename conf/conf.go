@@ -65,6 +65,7 @@ func New() *Config {
         log.Printf("Error: could not read config file %s\n", Path)
         log.Fatal(err)
     }
+    defer file.Close()
 
     decoder := json.NewDecoder(file)
     err = decoder.Decode(c)
