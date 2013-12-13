@@ -32,23 +32,24 @@ type Queue struct {
 
 // New creates a new Queue
 // Return error when queue directory dont exists.
-func New() (q *Queue, err error) {
-    q = new(Queue)
+func New() *Queue {
+    q := new(Queue)
     q.Dir = conf.QueueDir()
 
-    if _, err := os.Stat(q.Dir); os.IsNotExist(err) {
-        return nil, fmt.Errorf("Queue dir \"%s\" not found", q.Dir)
-    }
+    //if _, err := os.Stat(q.Dir); os.IsNotExist(err) {
+    //    return nil, fmt.Errorf("Queue dir \"%s\" not found", q.Dir)
+    //}
 
-    return q, nil
+    return q
 }
 
 // HasQueue checks if has files in queue directory and
 // append this files in Queue.Files.
-func (q *Queue) HasQueue() bool {
-    hasQueue := false
-
-    dir, _ := os.Open(q.Dir)
+func (q *Queue) HasQueue() (hasQueue bool, err error) {
+    dir, err := os.Open(q.Dir)
+    if err != nil && os.IsNotExist(err) {
+        return false, fmt.Errorf("Queue dir \"%s\" not found", q.Dir)
+    }
     defer dir.Close()
 
     fileInfos, _ := dir.Readdir(-1)
@@ -64,7 +65,7 @@ func (q *Queue) HasQueue() bool {
         }
     }
 
-    return hasQueue
+    return hasQueue, nil
 }
 
 // Process a file in argument.

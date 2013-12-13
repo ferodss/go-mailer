@@ -25,13 +25,15 @@ import (
 // Check queue and proccess each file in queue
 // in a different goroutine.
 func run() {
-    q, err := queue.New()
+    q := queue.New()
+
+    hasQueue, err := q.HasQueue()
     if err != nil {
         log.Println(err)
         return
     }
 
-    if q.HasQueue() {
+    if hasQueue {
         log.Printf("%d files in queue.", len(q.Files))
 
         for _,file := range q.Files {
