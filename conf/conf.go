@@ -121,6 +121,17 @@ func QueueDir() string {
     return conf.QueueDir
 }
 
+// Access to Config.Mail.FromName
+func MailFromName() string {
+    return conf.Mail.FromName
+}
+
+// Access to Config.Mail.From
+func MailFrom() string {
+    return conf.Mail.From
+}
+
+// Converts a Config object to string
 func String() string {
     return conf.String()
 }

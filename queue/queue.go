@@ -19,9 +19,10 @@ import (
     "regexp"
     "path/filepath"
     "log"
-    "time"
 
 	"github.com/felipedjinn/go-mailer/conf"
+	"github.com/felipedjinn/go-mailer/message"
+	"github.com/felipedjinn/go-mailer/mailer"
 )
 
 // A Queue represents an active queue object.
@@ -72,9 +73,12 @@ func (q *Queue) HasQueue() (hasQueue bool, err error) {
 func (q *Queue) Process(file string) {
     log.Printf("Processing file: %s\n", file)
 
-    // TODO
+    message, err := message.New(file);
+    if err != nil {
+        log.Printf(err.Error())
+        return
+    }
 
-    wait, _ := time.ParseDuration("12s")
-    time.Sleep(wait)
-    fmt.Println("Finished")
+    // TODO: Remove file from queue when mail.Send return TRUE
+    mailer.Send(message)
 }
