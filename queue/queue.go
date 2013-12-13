@@ -31,16 +31,16 @@ type Queue struct {
 }
 
 // New creates a new Queue
-// Stop process when queue directory dont exists.
-func New() *Queue {
-    q := new(Queue)
+// Return error when queue directory dont exists.
+func New() (q *Queue, err error) {
+    q = new(Queue)
     q.Dir = conf.QueueDir()
 
     if _, err := os.Stat(q.Dir); os.IsNotExist(err) {
-        log.Fatal(fmt.Sprintf("Queue dir \"%s\" not found", q.Dir))
+        return nil, fmt.Errorf("Queue dir \"%s\" not found", q.Dir)
     }
 
-    return q
+    return q, nil
 }
 
 // HasQueue checks if has files in queue directory and
@@ -77,4 +77,3 @@ func (q *Queue) Process(file string) {
     time.Sleep(wait)
     fmt.Println("Finished")
 }
-

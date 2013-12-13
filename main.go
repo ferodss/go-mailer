@@ -22,11 +22,18 @@ import (
 	"github.com/felipedjinn/go-mailer/queue"
 )
 
-
+// Check queue and proccess each file in queue
+// in a different goroutine.
 func run() {
-    q := queue.New()
+    q, err := queue.New()
+    if err != nil {
+        log.Println(err)
+        return
+    }
 
     if q.HasQueue() {
+        log.Printf("%d files in queue.", len(q.Files))
+
         for _,file := range q.Files {
             go q.Process(file)
         }
